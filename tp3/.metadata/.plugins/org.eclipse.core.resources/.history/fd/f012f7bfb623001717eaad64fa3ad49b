@@ -53,10 +53,10 @@ char vmm_read (unsigned int laddress)
 	  paddress = frame*256;
   }
   else{
-	  frame = pt_lookup(pageNumber);
+	  frame = pt_lookup(pageNumber,1);
 	  paddress=0;
   }
-  paddress+=offset;
+  paddress+=offset
   // TODO: Fournir les arguments manquants.
 
   vmm_log_command (stdout, "READING", laddress, pageNumber, frame, offset, paddress, c);
@@ -65,7 +65,7 @@ char vmm_read (unsigned int laddress)
 
 /* Effectue une écriture à l'adresse logique `laddress`.  */
 void vmm_write (unsigned int laddress, char c)
-{
+{paddress
   int pageNumber;
   int offset;
   int frame;
@@ -74,7 +74,7 @@ void vmm_write (unsigned int laddress, char c)
   /* ¡ TODO: COMPLÉTER ! */
   offset  = (laddress%256);
   pageNumber= (laddress-pageNumber)/256;
-  frame = tlb_lookup(pageNumber,0);
+  frame = tlb_lookup(pageNumber);
   if(frame>-1){
 	  paddress = frame*256;
   }

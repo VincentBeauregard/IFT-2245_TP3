@@ -65,7 +65,7 @@ char vmm_read (unsigned int laddress)
 
 /* Effectue une écriture à l'adresse logique `laddress`.  */
 void vmm_write (unsigned int laddress, char c)
-{
+{paddress
   int pageNumber;
   int offset;
   int frame;

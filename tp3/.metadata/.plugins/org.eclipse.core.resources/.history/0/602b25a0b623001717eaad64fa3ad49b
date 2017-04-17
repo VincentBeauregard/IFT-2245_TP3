@@ -50,13 +50,11 @@ char vmm_read (unsigned int laddress)
   pageNumber = (laddress-pageNumber)/256;
   frame = tlb_lookup(pageNumber,1);
   if(frame>-1){
-	  paddress = frame*256;
+	  paddress = frame*256+offset;
   }
   else{
-	  frame = pt_lookup(pageNumber);
 	  paddress=0;
   }
-  paddress+=offset;
   // TODO: Fournir les arguments manquants.
 
   vmm_log_command (stdout, "READING", laddress, pageNumber, frame, offset, paddress, c);
@@ -76,13 +74,11 @@ void vmm_write (unsigned int laddress, char c)
   pageNumber= (laddress-pageNumber)/256;
   frame = tlb_lookup(pageNumber,0);
   if(frame>-1){
-	  paddress = frame*256;
+	  paddress = frame*256+offset;
   }
   else{
-	  frame = pt_lookup(pageNumber);
 	  paddress=0;
   }
-  paddress+=offset;
   // TODO: Fournir les arguments manquants.
   vmm_log_command (stdout, "WRITING", laddress, pageNumber, frame, offset, paddress, c);
 }

@@ -41,25 +41,15 @@ char vmm_read (unsigned int laddress)
 {
   char c = '!';
   int pageNumber;
-  int offset;
-  int frame;
-  int paddress;
+  int offSet;
   read_count++;
   /* ¡ TODO: COMPLÉTER ! */
-  offset = (laddress%256);
+  offSet = (laddress%256);
   pageNumber = (laddress-pageNumber)/256;
-  frame = tlb_lookup(pageNumber,1);
-  if(frame>-1){
-	  paddress = frame*256;
-  }
-  else{
-	  frame = pt_lookup(pageNumber);
-	  paddress=0;
-  }
-  paddress+=offset;
+  printf("\n\nLogical Address : %i\nPageNumber : %i\nOffSet : %i\n",laddress,pageNumber,offSet);
   // TODO: Fournir les arguments manquants.
 
-  vmm_log_command (stdout, "READING", laddress, pageNumber, frame, offset, paddress, c);
+  vmm_log_command (stdout, "READING", laddress, pageNumber, 0, offSet, 0, c);
   return c;
 }
 
@@ -67,24 +57,14 @@ char vmm_read (unsigned int laddress)
 void vmm_write (unsigned int laddress, char c)
 {
   int pageNumber;
-  int offset;
-  int frame;
-  int paddress;
+  int offSet;
   write_count++;
   /* ¡ TODO: COMPLÉTER ! */
-  offset  = (laddress%256);
+  offSet  = (laddress%256);
   pageNumber= (laddress-pageNumber)/256;
-  frame = tlb_lookup(pageNumber,0);
-  if(frame>-1){
-	  paddress = frame*256;
-  }
-  else{
-	  frame = pt_lookup(pageNumber);
-	  paddress=0;
-  }
-  paddress+=offset;
+  printf("\n\nLogical Address : %i\nPageNumber : %i\nOffSet : %i\n",laddress,pageNumber,offSet);
   // TODO: Fournir les arguments manquants.
-  vmm_log_command (stdout, "WRITING", laddress, pageNumber, frame, offset, paddress, c);
+  vmm_log_command (stdout, "WRITING", laddress, pageNumber, 0, offSet, 0, c);
 }
 
 
