@@ -96,7 +96,6 @@ void vmm_write (unsigned int laddress, char c)
   paddress+=offset;
 
   pm_write(paddress,c);
-  pm_backup_frame(pageNumber,frame);
   // TODO: Fournir les arguments manquants.
   vmm_log_command (stdout, "WRITING", laddress, pageNumber, frame, offset, paddress, c);
 }

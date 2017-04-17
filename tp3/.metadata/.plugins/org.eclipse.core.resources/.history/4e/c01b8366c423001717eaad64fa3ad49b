@@ -29,7 +29,7 @@ void pm_download_page (unsigned int page_number, unsigned int frame_number)
 }
 
 // Sauvegarde la frame spécifiée dans la page du backing store
-void pm_backup_frame (unsigned int page_number, unsigned int frame_number)
+void pm_backup_frame (unsigned int frame_number, unsigned int page_number)
 {
   backup_count++;
   /* ¡ TODO: COMPLÉTER ! */

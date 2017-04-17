@@ -51,15 +51,13 @@ char vmm_read (unsigned int laddress)
   frame = tlb_lookup(pageNumber,1);
   if(frame>-1){//succes recherche TLB
 	  paddress = frame*256;
-  }else{//TLB-miss
+  }
+  else{//TLB-miss
 	  frame = pt_lookup(pageNumber);
 	  if(frame>-1)
 		  tlb_add_entry(pageNumber,frame,false);
 	  else{//page-fault
-		  pm_download_page(pageNumber,frame);
-		  pt_set_entry(pageNumber,frame);
-		  tlb_add_entry(pageNumber,frame,false);
-	  }
+
   }
   paddress+=offset;
   pm_read(paddress);
@@ -83,20 +81,18 @@ void vmm_write (unsigned int laddress, char c)
   frame = tlb_lookup(pageNumber,0);
   if(frame>-1){//succes recherche TLB
 	  paddress = frame*256;
-  }else{//TLB-miss
+  }
+  else{//TLB-miss
 	  frame = pt_lookup(pageNumber);
 	  if(frame>-1)
 		  tlb_add_entry(pageNumber,frame,true);
 	  else{//page-fault
-		  pm_download_page(pageNumber,frame);
-		  pt_set_entry(pageNumber,frame);
-		  tlb_add_entry(pageNumber,frame,true);
+
 	  }
   }
   paddress+=offset;
 
   pm_write(paddress,c);
-  pm_backup_frame(pageNumber,frame);
   // TODO: Fournir les arguments manquants.
   vmm_log_command (stdout, "WRITING", laddress, pageNumber, frame, offset, paddress, c);
 }
