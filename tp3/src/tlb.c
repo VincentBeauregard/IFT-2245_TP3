@@ -34,8 +34,21 @@ void tlb_init (FILE *log)
  * Renvoie le `frame_number`, si trouvé, ou un nombre négatif sinon.  */
 static int tlb__lookup (unsigned int page_number, bool write)
 {
-  // TODO: COMPLÉTER CETTE FONCTION.
-  return -1;
+  for (int i = 0; i < TLB_NUM_ENTRIES; i++)
+    if (tlb_entries[i].frame_number >= 0 &&
+	tlb_entries[i].page_number  == page_number) {
+      
+      struct tlb_entry tmp = tlb_entries[i];
+      
+      // Promeut la page accédée à l'instant (rotation des éléments supérieurs à i)
+      for (int j = i; j > 0; j--)
+	tlb_entries[j] = tlb_entries[j + 1];
+
+      tlb_entries[0] = tmp;
+
+      break;
+    }
+  return tlb_entries[0].frame_number;
 }
 
 /* Ajoute dans le TLB une entrée qui associe `frame_number` à
@@ -43,7 +56,13 @@ static int tlb__lookup (unsigned int page_number, bool write)
 static void tlb__add_entry (unsigned int page_number,
                             unsigned int frame_number, bool readonly)
 {
-  // TODO: COMPLÉTER CETTE FONCTION.
+  // Flush la page utilisée il y a le plus de temps
+  for (int i = TLB_NUM_ENTRIES - 1; i > 0; i--)
+    tlb_entries[i] = tlb_entries[i + 1];
+  
+  tlb_entries[0].page_number  = page_number;
+  tlb_entries[0].frame_number = frame_number;
+  tlb_entries[0].readonly     = false;
 }
 
 /******************** ¡ NE RIEN CHANGER CI-DESSOUS !  ******************/
@@ -69,7 +88,7 @@ void tlb_clean (void)
   fprintf (stdout, "TLB hits     : %3u\n", tlb_hit_count);
   fprintf (stdout, "TLB changes  : %3u\n", tlb_mod_count);
   fprintf (stdout, "TLB miss rate: %.1f%%\n",
-           100 * tlb_hit_count
+           100 * tlb_miss_count
            /* Ajoute 0.01 pour éviter la division par 0.  */
            / (0.01 + tlb_hit_count + tlb_miss_count));
 }

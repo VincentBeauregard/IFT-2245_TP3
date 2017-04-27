@@ -11,6 +11,9 @@
 #include "pt.h"
 #include "pm.h"
 
+/* Include ajouté */
+#include <math.h>
+
 static unsigned int read_count = 0;
 static unsigned int write_count = 0;
 static FILE* vmm_log;
@@ -25,80 +28,86 @@ void vmm_init (FILE *log)
 // NE PAS MODIFIER CETTE FONCTION
 static void vmm_log_command (FILE *out, const char *command,
                              unsigned int laddress, /* Logical address. */
-							 unsigned int page,
+		             unsigned int page,
                              unsigned int frame,
                              unsigned int offset,
                              unsigned int paddress, /* Physical address.  */
-							 char c) /* Caractère lu ou écrit.  */
+		             char c) /* Caractère lu ou écrit.  */
 {
   if (out)
     fprintf (out, "%s[%c]@%05d: p=%d, o=%d, f=%d pa=%d\n", command, c, laddress,
 	     page, offset, frame, paddress);
 }
 
+/* Fonction ajoutée */
+// Gère l'accès aux frame
+int page_lookup(unsigned int page_number, bool write)
+{
+  int frame_number = tlb_lookup(page_number, write);
+
+  // Va chercher dans la table et met le TLB à jour
+  if (frame_number < 0) {
+    frame_number = pt_lookup(page_number);
+
+    if (frame_number < 0)
+      frame_number = pm_swap(page_number);
+    
+    tlb_add_entry(page_number, frame_number, write);
+  }
+
+  return frame_number;
+}
+
 /* Effectue une lecture à l'adresse logique `laddress`.  */
 char vmm_read (unsigned int laddress)
 {
-  char c = '!';
-  int pageNumber;
-  int offset;
-  int frame;
-  int paddress;
+  char c;
   read_count++;
-  /* ¡ TODO: COMPLÉTER ! */
-  offset = (laddress%256);
-  pageNumber = (laddress-pageNumber)/256;
-  frame = tlb_lookup(pageNumber,1);
-  if(frame>-1){//succes recherche TLB
-	  paddress = frame*256;
-  }else{//TLB-miss
-	  frame = pt_lookup(pageNumber);
-	  if(frame>-1)
-		  tlb_add_entry(pageNumber,frame,false);
-	  else{//page-fault
-		  pm_download_page(pageNumber,frame);
-		  pt_set_entry(pageNumber,frame);
-		  tlb_add_entry(pageNumber,frame,false);
-	  }
-  }
-  paddress+=offset;
-  pm_read(paddress);
-  // TODO: Fournir les arguments manquants.
 
-  vmm_log_command (stdout, "READING", laddress, pageNumber, frame, offset, paddress, c);
+  // Récupère les information encodées dans laddress
+  unsigned int page_bits   = 2 * NUM_PAGES - 1;
+  unsigned int offset_bits = 2 * PAGE_FRAME_SIZE - 1;
+  unsigned int page_number = (laddress >> ((int) log(offset_bits) + 2)) & page_bits;
+  unsigned int offset      =  laddress                                  & offset_bits;
+  
+  unsigned int frame_number = page_lookup(page_number, false);
+  
+  unsigned int physical_address = frame_number * PAGE_FRAME_SIZE + offset;
+
+  c = pm_read(physical_address);
+  
+  vmm_log_command (stdout, "READING",
+		   laddress,
+		   page_number,
+		   frame_number, offset,
+		   physical_address,
+		   c);
   return c;
 }
 
 /* Effectue une écriture à l'adresse logique `laddress`.  */
 void vmm_write (unsigned int laddress, char c)
 {
-  int pageNumber;
-  int offset;
-  int frame;
-  int paddress;
   write_count++;
-  /* ¡ TODO: COMPLÉTER ! */
-  offset  = (laddress%256);
-  pageNumber= (laddress-pageNumber)/256;
-  frame = tlb_lookup(pageNumber,0);
-  if(frame>-1){//succes recherche TLB
-	  paddress = frame*256;
-  }else{//TLB-miss
-	  frame = pt_lookup(pageNumber);
-	  if(frame>-1)
-		  tlb_add_entry(pageNumber,frame,true);
-	  else{//page-fault
-		  pm_download_page(pageNumber,frame);
-		  pt_set_entry(pageNumber,frame);
-		  tlb_add_entry(pageNumber,frame,true);
-	  }
-  }
-  paddress+=offset;
 
-  pm_write(paddress,c);
-  pm_backup_frame(pageNumber,frame);
-  // TODO: Fournir les arguments manquants.
-  vmm_log_command (stdout, "WRITING", laddress, pageNumber, frame, offset, paddress, c);
+  // Récupère les information encodées dans laddress
+  unsigned int page_bits   = 2 * NUM_PAGES - 1;
+  unsigned int offset_bits = 2 * PAGE_FRAME_SIZE - 1;
+  unsigned int page_number = (laddress >> ((int) log(offset_bits) + 2)) & page_bits;
+  unsigned int offset      =  laddress                                  & offset_bits;
+  
+  unsigned int frame_number = page_lookup(page_number, true);
+  
+  unsigned int physical_address = frame_number * PAGE_FRAME_SIZE + offset;
+
+  pm_write(physical_address, c);
+  
+  vmm_log_command (stdout, "WRITING",
+		   laddress,
+		   page_number,
+		   frame_number, offset,
+		   physical_address,
+		   c);
 }
 
 
