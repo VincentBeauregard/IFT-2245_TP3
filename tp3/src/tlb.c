@@ -34,6 +34,8 @@ void tlb_init (FILE *log)
  * Renvoie le `frame_number`, si trouvé, ou un nombre négatif sinon.  */
 static int tlb__lookup (unsigned int page_number, bool write)
 {
+  unsigned int frame_number = -1;
+  
   for (int i = 0; i < TLB_NUM_ENTRIES; i++)
     if (tlb_entries[i].frame_number >= 0 &&
 	tlb_entries[i].page_number  == page_number) {
@@ -45,10 +47,12 @@ static int tlb__lookup (unsigned int page_number, bool write)
 	tlb_entries[j] = tlb_entries[j + 1];
 
       tlb_entries[0] = tmp;
+      frame_number = tlb_entries[0].frame_number;
 
       break;
     }
-  return tlb_entries[0].frame_number;
+  
+  return frame_number;
 }
 
 /* Ajoute dans le TLB une entrée qui associe `frame_number` à
