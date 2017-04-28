@@ -9,23 +9,23 @@
 \section*{Rapport}
 \subsection*{Lecture et compréhension de la matière}
 
-Aucune difficulté importante ne nous à particulièrement causé des problème à l'exception de la matière concernant les dirty-bits et le read-only. La documentation est clair du point de vue théorique mais son application pratique nous semblais quelque peut nébuleuse.
+Aucune difficulté importante ne nous à particulièrement causé des problème à l'exception de la matière concernant les dirty-bits et le read-only. La documentation est clair du point de vue théorique mais son application pratique nous semblais quelque peu nébuleuse.
 
-\subsection*{Lecture et compréhension le code fournis}
-Sur une vue d'ensemble, les section du code nécessitant une modification de notre part était bien indiqué et les noms de fonctions très concrets à la matière, ce qui nous permettait de faire le pont entre la théorie et le code facilement.
+\subsection*{Lecture et compréhension du code fournis}
+Sur une vue d'ensemble, les sections du code nécessitant une modification de notre part était bien indiquées et les noms de fonctions très concrets à la matière, ce qui nous permettait de faire le pont entre la théorie et le code facilement.
 
 
 
 
 \subsection*{Compléter le code fourni.}
 
-Le code fournis étant clair, nous étions bien guidé pour remplir les fonction adéquatement. Le code fonctionne simplement de la façon suivante : sachant qu'il s'agisse d'une écriture ou d'une lecture, l'accès à une page devra toujours passer par une adresse logique de forme $pageNumber + offset$, une recherche via le TLB s'en suit, en cas de hit, la lecture de la page ce fait directement via la mémoire physique. Autrement, le programme se dirige vers la pageTable. En l'absence de page fault, le TLB est mis à jour en FIFO et la lecture du page s'exécute. S'il y a présence de pageFault, si la table des pages est pleine, une page est alors évincé,selon un algorithme second chance, et la nouvelle page est téléchargé et mise en mémoire physique . 
+Le code fournis étant clair, nous étions bien guidé pour remplir les fonctions adéquatement. Le code fonctionne simplement de la façon suivante : sachant qu'il s'agisse d'une écriture ou d'une lecture, l'accès à une page devra toujours passer par une adresse logique de forme $pageNumber + offset$, une recherche via le TLB s'en suit. en cas de hit, la lecture de la page ce fait directement via la mémoire physique. Autrement, le programme se dirige vers la pageTable. En l'absence de page fault, le TLB est mis à jour en FIFO et la lecture du page s'exécute. S'il y a présence de pageFault, si la table des pages est pleine, une page est alors évincé,selon un algorithme second chance, et la nouvelle page est téléchargée et mise en mémoire physique . 
 
 \begin{enumerate}
 	
 	\item \textbf{Algorithme - Page Fault} 
   Nous avons implémenté l'algorithme de remplacement des pages de façon à ce que pour chaque nombre d'accès prédéfini (dans RATE) le programme va placer à 
-  {\em true}. Le programme n'évince alors que les vielles pages. Ainsi un fonctionnement LRU second-chance est mis de l'avant pour gérer les page faults utilisant un bit de référence dans la page table. Cette algorithme tends à être très semblable à FIFO si aucune bit de référence page n'a la chance d'être initialisé a 1 ou si au contraire, ils sont tous initialisé à 1.
+  {\em true} le bit de référence de la page accédée. Le programme n'évince alors que les vielles pages en les parcourant de manière cyclique à chaque page fault. À tous les passages, si ce bit est a {\em true}, il est réinitialisé à {\em false}, autrement la page sera évincé. Ainsi un fonctionnement LRU second-chance est mis de l'avant pour gérer les page faults en utilisant un bit de référence dans la page table. Cette algorithme tends à être très semblable à FIFO si aucune bit de référence page n'a la chance d'être initialisé a {\em true} ou si au contraire, ils sont tous initialisé à {\em true}.
   
   \item \textbf{Algorithme - TLB-miss} 
   Nous avons implémenté l'algorithme FIFO tout à fait simple pour gérer les entrés du TLB. À chaque TLB-miss,
@@ -35,7 +35,7 @@ Le code fournis étant clair, nous étions bien guidé pour remplir les fonction
 \end{enumerate}
 
 
-\subsection*{Test}
+\subsection*{Test-Méthodologie}
 
 blabla
 
