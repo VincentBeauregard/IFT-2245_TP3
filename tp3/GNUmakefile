@@ -1,7 +1,7 @@
 BUILD_DIR=build
 CC=gcc
 CFLAGS=-g -std=gnu99 -Wall -pedantic -Isrc -I$(BUILD_DIR)
-LD_FLAGS=-lm
+LDFLAGS=-lm
 BISON=bison
 FLEX=flex
 
@@ -14,7 +14,7 @@ default: all
 all: $(BUILD_DIR)/vmm rapport.pdf
 
 $(BUILD_DIR)/vmm: $(patsubst %.o, $(BUILD_DIR)/%.o, $(OBJS))
-	$(CC) $(LDFLAGS) -o $@ $(patsubst %.o,$(BUILD_DIR)/%.o, $(OBJS))
+	$(CC)  -o $@ $(patsubst %.o,$(BUILD_DIR)/%.o, $(OBJS)) $(LDFLAGS)
 
 $(BUILD_DIR)/%.o: src/%.c
 	@[ -d "$$(dirname "$@")" ] || mkdir -p "$$(dirname "$@")"
