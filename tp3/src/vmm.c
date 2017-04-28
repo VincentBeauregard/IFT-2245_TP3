@@ -43,12 +43,14 @@ static void vmm_log_command (FILE *out, const char *command,
 // Gère l'accès aux frame
 int page_lookup(unsigned int page_number, bool write)
 {
+
   int frame_number = tlb_lookup(page_number, write);
 
-  // Va chercher dans la table et met le TLB à jour
+  // TLB-miss -- Va chercher dans la table et met le TLB à jour
   if (frame_number < 0) {
     frame_number = pt_lookup(page_number);
 
+    // page fault
     if (frame_number < 0)
       frame_number = pm_swap(page_number);
     

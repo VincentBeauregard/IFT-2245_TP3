@@ -35,7 +35,7 @@ void pt_init (FILE *log)
 static int pt__lookup (unsigned int page_number)
 {
   if (page_table[page_number].valid)
-    return page_table[page_number].frame_number;
+	return page_table[page_number].frame_number;
   return -1;
 }
 
@@ -90,17 +90,16 @@ void pt_clean (void)
   fprintf (stdout, "PT lookups   : %3u\n", pt_lookup_count);
   fprintf (stdout, "PT changes   : %3u\n", pt_set_count);
   fprintf (stdout, "Page Faults  : %3u\n", pt_page_fault_count);
-
   if (pt_log)
     {
       for (unsigned int i = 0; i < NUM_PAGES; i++)
 	{
-	  fprintf (pt_log,
+	  fprintf (&pt_log,
 		   "%d -> {%d,%s%s}\n",
 		   i,
 		   page_table[i].frame_number,
-                   page_table[i].valid ? "" : " invalid",
-                   page_table[i].readonly ? " readonly" : "");
+           page_table[i].valid ? "" : " invalid",
+           page_table[i].readonly ? " readonly" : "");
 	}
     }
 }

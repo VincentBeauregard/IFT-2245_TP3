@@ -44,7 +44,7 @@ static int tlb__lookup (unsigned int page_number, bool write)
       
       // Promeut la page accédée à l'instant (rotation des éléments supérieurs à i)
       for (int j = i; j > 0; j--)
-	tlb_entries[j] = tlb_entries[j + 1];
+	tlb_entries[j] = tlb_entries[j - 1];
 
       tlb_entries[0] = tmp;
       frame_number = tlb_entries[0].frame_number;
@@ -62,7 +62,7 @@ static void tlb__add_entry (unsigned int page_number,
 {
   // Flush la page utilisée il y a le plus de temps
   for (int i = TLB_NUM_ENTRIES - 1; i > 0; i--)
-    tlb_entries[i] = tlb_entries[i + 1];
+    tlb_entries[i] = tlb_entries[i -1];
   
   tlb_entries[0].page_number  = page_number;
   tlb_entries[0].frame_number = frame_number;
