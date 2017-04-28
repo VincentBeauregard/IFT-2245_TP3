@@ -1,7 +1,7 @@
 BUILD_DIR=build
 CC=gcc
 CFLAGS=-g -std=gnu99 -Wall -pedantic -Isrc -I$(BUILD_DIR)
-LDFLAGS=-lm
+LD_FLAGS=-lm
 BISON=bison
 FLEX=flex
 
