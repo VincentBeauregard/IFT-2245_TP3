@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "conf.h"
+
+FILE *command1;
+FILE *command2;
+
+void create1(int size) {
+  for (int i = 0; i < size; i++) {
+    fprintf(command1,
+	    "%c%d'%c';\n",
+	    rand() % 2 ? 'W' : 'R',
+	    // Maximise les chances d'utiliser le TLB
+	    rand() % (TLB_NUM_ENTRIES * 2),
+	    rand() % 95 + 32);
+  }
+}
+
+void create2(int size) {
+for (int i = 0; i < size; i++) {
+    fprintf(command2,
+	    "%c%d'%c';\n",
+	    rand() % 2 ? 'W' : 'R',
+	    // Maximise les chances d'utiliser le TLB
+	    rand() % (TLB_NUM_ENTRIES * 2),
+	    rand() % 95 + 32);
+ }
+}
+
+int main () {
+  command1 = fopen("command1.in", "w+");
+  command2 = fopen("command2.in", "w+");
+
+  create1(NUM_PAGES);
+  create2(NUM_PAGES * 10);
+  
+  fclose(command1);
+  fclose(command2);
+  return 0;
+}

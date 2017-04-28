@@ -11,7 +11,7 @@ OBJS = tlb.o parse.tab.o vmm.o pm.o pt.o tokens.o common.o
 
 default: all
 
-all: $(BUILD_DIR)/vmm rapport.pdf
+all: $(BUILD_DIR)/vmm rapport.pdf tests/gen
 
 $(BUILD_DIR)/vmm: $(patsubst %.o, $(BUILD_DIR)/%.o, $(OBJS))
 	$(CC) $(LDFLAGS) -o $@ $(patsubst %.o,$(BUILD_DIR)/%.o, $(OBJS))
@@ -28,8 +28,12 @@ $(BUILD_DIR)/tokens.c: src/tokens.l
 	@[ -d "$$(dirname "$@")" ] || mkdir -p "$$(dirname "$@")"
 	$(FLEX) -o $@ $<
 
+tests/gen.c:
+	$(CC) tests/gen.c -l src -o tests/gen
+
 run: all
-	$(BUILD_DIR)/vmm tests/BACKING_STORE.txt <tests/command.in
+	tests/gen
+	$(BUILD_DIR)/vmm tests/BACKING_STORE.txt <tests/command1.in
 
 clean:
 	$(RM) -r $(BUILD_DIR) *.aux *.log
