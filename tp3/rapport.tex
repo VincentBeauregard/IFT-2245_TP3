@@ -24,10 +24,12 @@ Le code fournis étant clair, nous étions bien guidé pour remplir les fonction
 \begin{enumerate}
 	
 	\item \textbf{Algorithme - Page Fault} 
+	
   Nous avons implémenté l'algorithme de remplacement des pages de façon à ce que pour chaque nombre d'accès prédéfini (dans RATE) le programme va placer à 
   {\em true} le bit de référence de la page accédée. Le programme n'évince alors que les vielles pages en les parcourant de manière cyclique à chaque page fault. À tous les passages, si ce bit est a {\em true}, il est réinitialisé à {\em false}, autrement la page sera évincé. Ainsi un fonctionnement LRU second-chance est mis de l'avant pour gérer les page faults en utilisant un bit de référence dans la page table. Cette algorithme tends à être très semblable à FIFO si aucune bit de référence page n'a la chance d'être initialisé a {\em true} ou si au contraire, ils sont tous initialisé à {\em true}.
   
   \item \textbf{Algorithme - TLB-miss} 
+  
   Nous avons implémenté l'algorithme FIFO tout à fait simple pour gérer les entrés du TLB. À chaque TLB-miss,
   l'ensemble des valeurs sont déplacer d'une case dans le TLB, la dernière est évincer et la nouvelle entré est positionné à la première case.
 	
