@@ -14,7 +14,7 @@ default: all
 all: $(BUILD_DIR)/vmm rapport.pdf tests/gen
 
 $(BUILD_DIR)/vmm: $(patsubst %.o, $(BUILD_DIR)/%.o, $(OBJS))
-	$(CC) $(LDFLAGS) -o $@ $(patsubst %.o,$(BUILD_DIR)/%.o, $(OBJS))
+	$(CC)  -o $@ $(patsubst %.o,$(BUILD_DIR)/%.o, $(OBJS)) $(LDFLAGS)
 
 $(BUILD_DIR)/%.o: src/%.c
 	@[ -d "$$(dirname "$@")" ] || mkdir -p "$$(dirname "$@")"
