@@ -42,17 +42,13 @@ Le code fournis étant clair, nous étions bien guidé pour remplir les fonction
 \begin{enumerate}
 	\item \textbf{command1.in - Efficacité du TLB} 
 	
-	Notre implémentation du TLB étant en FCFS, le test vérifie les 8 dernière entrés différentes n'occasionne pas de TLB-miss.
+	Notre implémentation du TLB étant en FCFS, nous avons tester son efficacité en générant des lecture et écriture aléatoirement de façon à maximiser le nombre de TLB-hit en limitant les pages différente à 20.
 	
-	Nous occasionnons les entrée : //TODO
-	et recevons tel qu'un algorithme FCFS le devrait //TODO TLB-miss
+	Nous obtenons un ratio de TLB-miss avoisinant les 75\%.
 	
 	\item \textbf{command2.in - Efficacité table des pages} 
 	
-	Afin de tester l'efficacité de notre algorthme, il nous a fallu simuler un ensemble identique suffisament souvent pour changé le bit de référence à {\em true} pour ensuite exploiter cette donnée.
-	
-	Nous occasionnons les entrée : //TODO
-	et recevons tel qu'un algorithme FCFS le devrait //TODO page-fault
+	Notre algorithme de gestion de page-fault étant en second-chance, nous avons tester son efficacité en générant des lecture et écriture aléatoirement de façon à maximiser le nombre de page-fault occasionnant un swap en maximisant aléatoirement la porté des pages.
 	
 	
 \end{enumerate}
